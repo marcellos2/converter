@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECNOISO - Conversor Universal de Unidades</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Particles Background -->
+    <div id="particles-background"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">TECNOISO</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Produtos</a>
+            <a href="#" class="nav-link">Aplicações Científicas</a>
+            <a href="#" class="nav-link active">Conversor</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="hero-section">
+            <div class="hero-content">
+                <div class="hero-icon">🔬</div>
+            <p class="hero-subtitle">Sistema avançado de conversão de unidades para metrologia profissional</p>
+            </div>
+        </header>
+
+        <main class="converter-main">
+            <div class="converter-container">
+                <div class="converter-header">
+                    <div class="category-selector">
+                        <label for="category">Categoria de Medição</label>
+                        <select id="category" class="premium-select">
+                            <option value="length">📏 Comprimento</option>
+                            <option value="area">📐 Área</option>
+                            <option value="volume">🧊 Volume</option>
+                            <option value="mass">⚖️ Massa</option>
+                            <option value="temperature">🌡️ Temperatura</option>
+                            <option value="time">⏰ Tempo</option>
+                            <option value="speed">🏃 Velocidade</option>
+                            <option value="acceleration">🚀 Aceleração</option>
+                            <option value="force">💪 Força</option>
+                            <option value="pressure">🌊 Pressão</option>
+                            <option value="energy">⚡ Energia</option>
+                            <option value="power">🔋 Potência</option>
+                            <option value="frequency">📡 Frequência</option>
+                            <option value="electric_current">⚡ Corrente Elétrica</option>
+                            <option value="electric_voltage">🔌 Tensão Elétrica</option>
+                            <option value="electric_resistance">🔧 Resistência Elétrica</option>
+                            <option value="electric_capacitance">🔋 Capacitância</option>
+                            <option value="magnetic_field">🧲 Campo Magnético</option>
+                            <option value="luminous_intensity">💡 Intensidade Luminosa</option>
+                            <option value="angle">📐 Ângulo</option>
+                            <option value="data">💾 Dados Digitais</option>
+                            <option value="fuel_consumption">⛽ Consumo de Combustível</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="conversion-panel">
+                    <div class="input-section from-section">
+                        <div class="section-label">Converter De</div>
+                        <div class="input-group">
+                            <div class="value-input">
+                                <input type="number" id="fromValue" placeholder="Digite o valor" step="any">
+                                <div class="input-glow"></div>
+                            </div>
+                            <div class="unit-select">
+                                <select id="fromUnit" class="unit-selector"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swap-section">
+                        <button id="swapButton" class="swap-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="input-section to-section">
+                        <div class="section-label">Para</div>
+                        <div class="input-group">
+                            <div class="value-input">
+                                <input type="number" id="toValue" placeholder="Resultado" readonly>
+                                <div class="input-glow"></div>
+                            </div>
+                            <div class="unit-select">
+                                <select id="toUnit" class="unit-selector"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls-panel">
+                    <div class="precision-control">
+                        <label for="precision">Precisão Decimal</label>
+                        <select id="precision" class="control-select">
+                            <option value="2">2 casas decimais</option>
+                            <option value="4">4 casas decimais</option>
+                            <option value="6" selected>6 casas decimais</option>
+                            <option value="8">8 casas decimais</option>
+                            <option value="10">10 casas decimais</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="info-panels">
+                    <div class="formula-panel">
+                        <h3>Fórmula de Conversão</h3>
+                        <div id="formula" class="formula-content">
+                            Selecione as unidades para visualizar a fórmula
+                        </div>
+                    </div>
+                    
+                    <div class="quick-panel">
+                     
+                        <div id="quickResults" class="quick-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
