@@ -2,37 +2,107 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECNOISO - Conversor Universal de Unidades</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#ff4757">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Conversor Universal">
+    <title>Conversor Universal de Unidades </title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Manifest para PWA -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Favicon / Logo -->
+    <link rel="icon" type="image/png" href="">
 </head>
+
 <body>
-    <!-- Particles Background -->
+    <!-- Partículas de fundo -->
     <div id="particles-background"></div>
-    
+
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-brand">
-            <span class="logo">TECNOISO</span>
+           
+            <span class="logo-text">Metrologia</span>
         </div>
+
         <div class="nav-links">
-            <a href="#" class="nav-link">Home</a>
-            <a href="#" class="nav-link">Produtos</a>
-            <a href="#" class="nav-link">Aplicações Científicas</a>
             <a href="#" class="nav-link active">Conversor</a>
+            <a href="#" class="nav-link" onclick="toggleHistory()">Histórico</a>
+            <a href="#" class="nav-link" onclick="toggleFavorites()">Favoritos</a>
         </div>
     </nav>
 
+    <!-- PAINEL HISTÓRICO -->
+    <aside id="historyPanel" class="side-panel">
+        <div class="panel-header">
+            <h3>Histórico de Conversões</h3>
+            <button class="close-btn" onclick="toggleHistory()">×</button>
+        </div>
+        <div class="panel-content">
+            <div id="historyList" class="history-list">
+                <div class="no-history">Nenhuma conversão realizada ainda</div>
+            </div>
+            <button class="clear-btn" onclick="clearHistory()">Limpar Histórico</button>
+        </div>
+    </aside>
+
+    <!-- PAINEL FAVORITOS -->
+    <aside id="favoritesPanel" class="side-panel">
+        <div class="panel-header">
+            <h3>Conversões Favoritas</h3>
+            <button class="close-btn" onclick="toggleFavorites()">×</button>
+        </div>
+        <div class="panel-content">
+            <div id="favoritesList" class="favorites-list">
+                <div class="no-favorites">Nenhuma conversão favorita</div>
+            </div>
+        </div>
+    </aside>
+
     <div class="container">
+        <!-- HERO -->
         <header class="hero-section">
             <div class="hero-content">
                 <div class="hero-icon">🔬</div>
-            <p class="hero-subtitle">Sistema avançado de conversão de unidades para metrologia profissional</p>
+                <h1 class="hero-title">
+                    <span class="highlight">SISTEMA AVANÇADO</span>
+                    Conversor Universal
+                </h1>
+                <p class="hero-subtitle">
+                    Sistema avançado de conversão de unidades para metrologia profissional
+                </p>
+
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalConversions">0</span>
+                        <span class="stat-label">Conversões</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">22</span>
+                        <span class="stat-label">Categorias</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">200+</span>
+                        <span class="stat-label">Unidades</span>
+                    </div>
+                </div>
+                
+                <!-- Botão de instalação -->
+                <button id="installButton" class="install-btn pulse" style="display: none;">
+                     Instalar App
+                </button>
             </div>
         </header>
 
+        <!-- CONVERSOR -->
         <main class="converter-main">
-            <div class="converter-container">
+            <section class="converter-container">
+                <!-- Seletor de categoria -->
                 <div class="converter-header">
                     <div class="category-selector">
                         <label for="category">Categoria de Medição</label>
@@ -63,7 +133,9 @@
                     </div>
                 </div>
 
+                <!-- Painel de conversão -->
                 <div class="conversion-panel">
+                    <!-- De -->
                     <div class="input-section from-section">
                         <div class="section-label">Converter De</div>
                         <div class="input-group">
@@ -77,20 +149,33 @@
                         </div>
                     </div>
 
+                    <!-- Botões de troca/favorito -->
                     <div class="swap-section">
-                        <button id="swapButton" class="swap-btn">
+                        <button id="swapButton" class="swap-btn" title="Inverter">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/>
                             </svg>
                         </button>
+                        <button id="favoriteButton" class="favorite-btn" title="Adicionar aos favoritos">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                        </button>
                     </div>
 
+                    <!-- Para -->
                     <div class="input-section to-section">
                         <div class="section-label">Para</div>
                         <div class="input-group">
                             <div class="value-input">
                                 <input type="number" id="toValue" placeholder="Resultado" readonly>
                                 <div class="input-glow"></div>
+                                <button class="copy-btn" onclick="copyResult()" title="Copiar resultado">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                                    </svg>
+                                </button>
                             </div>
                             <div class="unit-select">
                                 <select id="toUnit" class="unit-selector"></select>
@@ -99,6 +184,7 @@
                     </div>
                 </div>
 
+                <!-- Controles -->
                 <div class="controls-panel">
                     <div class="precision-control">
                         <label for="precision">Precisão Decimal</label>
@@ -110,32 +196,91 @@
                             <option value="10">10 casas decimais</option>
                         </select>
                     </div>
+
+                    <div class="mode-control">
+                        <label>Modo de Exibição</label>
+                        <div class="mode-buttons">
+                            <button class="mode-btn active" data-mode="standard" onclick="setDisplayMode('standard')">
+                                Padrão
+                            </button>
+                            <button class="mode-btn" data-mode="scientific" onclick="setDisplayMode('scientific')">
+                                Científico
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Fórmula e passos -->
                 <div class="info-panels">
-                    <div class="formula-panel">
+                    <section class="formula-panel">
                         <h3>Fórmula de Conversão</h3>
                         <div id="formula" class="formula-content">
                             Selecione as unidades para visualizar a fórmula
                         </div>
-                    </div>
-                    
-                    <div class="quick-panel">
-                     
+
+                        <div class="calculation-steps">
+                            <h4>Passos do Cálculo</h4>
+                            <div id="calculationSteps" class="steps-content">
+                                Digite um valor para ver os passos
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="quick-panel">
+                        <h3>Conversões Rápidas</h3>
                         <div id="quickResults" class="quick-grid"></div>
-                    </div>
+                    </section>
                 </div>
-            </div>
+
+                <!-- Calculadora Científica -->
+                <section class="calculator-panel">
+                    <h3>Calculadora Científica</h3>
+                    <div class="calculator">
+                        <div class="calc-display">
+                            <input type="text" id="calcDisplay" readonly placeholder="0">
+                        </div>
+
+                        <div class="calc-buttons">
+                            <button onclick="clearCalc()">C</button>
+                            <button onclick="appendToCalc('/')" class="operator">÷</button>
+                            <button onclick="appendToCalc('*')" class="operator">×</button>
+                            <button onclick="deleteLast()" title="Apagar último caractere">⌫</button>
+
+                            <button onclick="appendToCalc('7')">7</button>
+                            <button onclick="appendToCalc('8')">8</button>
+                            <button onclick="appendToCalc('9')">9</button>
+                            <button onclick="appendToCalc('-')" class="operator">-</button>
+
+                            <button onclick="appendToCalc('4')">4</button>
+                            <button onclick="appendToCalc('5')">5</button>
+                            <button onclick="appendToCalc('6')">6</button>
+                            <button onclick="appendToCalc('+')" class="operator">+</button>
+
+                            <button onclick="appendToCalc('1')">1</button>
+                            <button onclick="appendToCalc('2')">2</button>
+                            <button onclick="appendToCalc('3')">3</button>
+                            <button onclick="calculate()" class="equals" rowspan="2">=</button>
+
+                            <button onclick="appendToCalc('0')" class="zero">0</button>
+                            <button onclick="appendToCalc('.')">.</button>
+
+                            <button onclick="appendToCalc('Math.sqrt(')" class="scientific">√</button>
+                            <button onclick="appendToCalc('Math.pow(')" class="scientific">^</button>
+                            <button onclick="appendToCalc('Math.sin(')" class="scientific">sin</button>
+                            <button onclick="appendToCalc('Math.cos(')" class="scientific">cos</button>
+                            <button onclick="appendToCalc('Math.tan(')" class="scientific">tan</button>
+                            <button onclick="appendToCalc('Math.PI')" class="scientific">π</button>
+                            <button onclick="appendToCalc('Math.E')" class="scientific">e</button>
+                            <button onclick="appendToCalc('(')">(</button>
+                            <button onclick="appendToCalc(')')">)</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
         </main>
 
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-brand">
-                </div>
-            </div>
-        </footer>
-    </div>
-
+       
+    <!-- JS -->
     <script src="script.js"></script>
 </body>
 </html>
