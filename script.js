@@ -763,11 +763,11 @@ function toggleHistory() {
     const historyPanel = document.getElementById('historyPanel');
     const favoritesPanel = document.getElementById('favoritesPanel');
     
-    if (historyPanel.classList.contains('active')) {
-        historyPanel.classList.remove('active');
+    if (historyPanel.classList.contains('open')) {
+        historyPanel.classList.remove('open');
     } else {
-        historyPanel.classList.add('active');
-        favoritesPanel.classList.remove('active');
+        historyPanel.classList.add('open');
+        favoritesPanel.classList.remove('open');
         updateHistoryDisplay();
     }
 }
@@ -777,11 +777,11 @@ function toggleFavorites() {
     const historyPanel = document.getElementById('historyPanel');
     const favoritesPanel = document.getElementById('favoritesPanel');
     
-    if (favoritesPanel.classList.contains('active')) {
-        favoritesPanel.classList.remove('active');
+    if (favoritesPanel.classList.contains('open')) {
+        favoritesPanel.classList.remove('open');
     } else {
-        favoritesPanel.classList.add('active');
-        historyPanel.classList.remove('active');
+        favoritesPanel.classList.add('open');
+        historyPanel.classList.remove('open');
         updateFavoritesDisplay();
     }
 }
