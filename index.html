@@ -26,8 +26,7 @@
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-brand">
-           
-            <span class="logo-text">Metrologia</span>
+            <img src="img/tec+original.png" alt="Logo Tec+" class="nav-logo">
         </div>
 
         <div class="nav-links">
@@ -68,7 +67,9 @@
         <!-- HERO -->
         <header class="hero-section">
             <div class="hero-content">
-                <div class="hero-icon">🔬</div>
+                <div class="hero-icon">
+                    <img src="img/tec+original.png" alt="Logo Tec+" class="hero-logo">
+                </div>
                 <h1 class="hero-title">
                     <span class="highlight">SISTEMA AVANÇADO</span>
                     Conversor Universal
@@ -92,10 +93,19 @@
                     </div>
                 </div>
                 
-                <!-- Botão de instalação -->
-                <button id="installButton" class="install-btn pulse" style="display: none;">
-                     Instalar App
-                </button>
+                <!-- Botão de instalação personalizado -->
+                <div id="installButton" class="install-container" style="display: none;">
+                    <button class="install-btn pulse">
+                        <svg class="install-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7,10 12,15 17,10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span class="install-text">Instalar App</span>
+                        <div class="install-shimmer"></div>
+                    </button>
+                    <p class="install-description">Instale para usar offline e ter acesso rápido</p>
+                </div>
             </div>
         </header>
 
@@ -279,7 +289,6 @@
             </section>
         </main>
 
-       
     <!-- JS -->
     <script src="script.js"></script>
 </body>
