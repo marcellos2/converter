@@ -304,11 +304,10 @@ const units = {
         units: {
             radian: { name: "Radiano (rad)", factor: 1 },
             degree: { name: "Grau (°)", factor: Math.PI/180 },
-            grade: { name: "Grado (grad)", factor: Math.PI/200 },
+            gradian: { name: "Gradiano (gon)", factor: Math.PI/200 },
             arcminute: { name: "Minuto de Arco (')", factor: Math.PI/10800 },
             arcsecond: { name: "Segundo de Arco (\")", factor: Math.PI/648000 },
-            milliradian: { name: "Miliradiano (mrad)", factor: 0.001 },
-            revolution: { name: "Revolução", factor: 2*Math.PI }
+            revolution: { name: "Revolução (rev)", factor: 2*Math.PI }
         }
     },
 
@@ -316,17 +315,18 @@ const units = {
         name: "Dados Digitais",
         base: "byte",
         units: {
-            bit: { name: "Bit", factor: 0.125 },
+            bit: { name: "Bit (b)", factor: 0.125 },
             byte: { name: "Byte (B)", factor: 1 },
-            kilobyte: { name: "Quilobyte (kB)", factor: 1000 },
-            megabyte: { name: "Megabyte (MB)", factor: 1e6 },
-            gigabyte: { name: "Gigabyte (GB)", factor: 1e9 },
-            terabyte: { name: "Terabyte (TB)", factor: 1e12 },
-            petabyte: { name: "Petabyte (PB)", factor: 1e15 },
+            kilobyte: { name: "Kilobyte (KB)", factor: 1024 },
+            megabyte: { name: "Megabyte (MB)", factor: 1048576 },
+            gigabyte: { name: "Gigabyte (GB)", factor: 1073741824 },
+            terabyte: { name: "Terabyte (TB)", factor: 1099511627776 },
+            petabyte: { name: "Petabyte (PB)", factor: 1125899906842624 },
             kibibyte: { name: "Kibibyte (KiB)", factor: 1024 },
             mebibyte: { name: "Mebibyte (MiB)", factor: 1048576 },
             gibibyte: { name: "Gibibyte (GiB)", factor: 1073741824 },
-            tebibyte: { name: "Tebibyte (TiB)", factor: 1099511627776 }
+            tebibyte: { name: "Tebibyte (TiB)", factor: 1099511627776 },
+            pebibyte: { name: "Pebibyte (PiB)", factor: 1125899906842624 }
         }
     },
 
@@ -334,720 +334,683 @@ const units = {
         name: "Consumo de Combustível",
         base: "liter_per_100km",
         units: {
-            liter_per_100km: { name: "Litro/100km", factor: 1 },
-            liter_per_km: { name: "Litro/km", factor: 0.01 },
-            km_per_liter: { name: "km/Litro", factor: -1 },
-            mile_per_gallon_us: { name: "MPG (US)", factor: -235.215 },
-            mile_per_gallon_imp: { name: "MPG (Imperial)", factor: -282.481 },
-            gallon_per_100_mile: { name: "Galão/100 milhas", factor: 2.35215 }
+            liter_per_100km: { name: "L/100km", factor: 1 },
+            km_per_liter: { name: "km/L", factor: 100 },
+            mile_per_gallon: { name: "mpg (US)", factor: 235.215 },
+            mile_per_gallon_uk: { name: "mpg (UK)", factor: 282.481 }
         },
         convert: function(value, from, to) {
-            if (from === to) return value;
-            
-            let base_value_in_l_per_100km;
-
-            if (from === 'liter_per_100km') {
-                base_value_in_l_per_100km = value;
-            } else if (from === 'liter_per_km') {
-                base_value_in_l_per_100km = value * 100;
-            } else if (from === 'km_per_liter') {
-                base_value_in_l_per_100km = 100 / value;
-            } else if (from === 'mile_per_gallon_us') {
-                base_value_in_l_per_100km = 235.215 / value;
-            } else if (from === 'mile_per_gallon_imp') {
-                base_value_in_l_per_100km = 282.481 / value;
-            } else if (from === 'gallon_per_100_mile') {
-                base_value_in_l_per_100km = value * 2.35215;
-            } else {
-                return NaN;
+            let baseValue;
+            switch(from) {
+                case 'liter_per_100km': baseValue = value; break;
+                case 'km_per_liter': baseValue = 100 / value; break;
+                case 'mile_per_gallon': baseValue = 235.215 / value; break;
+                case 'mile_per_gallon_uk': baseValue = 282.481 / value; break;
             }
-
-            if (to === 'liter_per_100km') {
-                return base_value_in_l_per_100km;
-            } else if (to === 'liter_per_km') {
-                return base_value_in_l_per_100km / 100;
-            } else if (to === 'km_per_liter') {
-                return 100 / base_value_in_l_per_100km;
-            } else if (to === 'mile_per_gallon_us') {
-                return 235.215 / base_value_in_l_per_100km;
-            } else if (to === 'mile_per_gallon_imp') {
-                return 282.481 / base_value_in_l_per_100km;
-            } else if (to === 'gallon_per_100_mile') {
-                return base_value_in_l_per_100km / 2.35215;
-            } else {
-                return NaN;
+            
+            switch(to) {
+                case 'liter_per_100km': return baseValue;
+                case 'km_per_liter': return 100 / baseValue;
+                case 'mile_per_gallon': return 235.215 / baseValue;
+                case 'mile_per_gallon_uk': return 282.481 / baseValue;
             }
         }
     }
 };
 
-// Elementos do DOM
-const categorySelect = document.getElementById('category');
-const fromUnitSelect = document.getElementById('fromUnit');
-const toUnitSelect = document.getElementById('toUnit');
-const fromValueInput = document.getElementById('fromValue');
-const toValueInput = document.getElementById('toValue');
-const swapButton = document.getElementById('swapButton');
-const favoriteButton = document.getElementById('favoriteButton');
-const precisionSelect = document.getElementById('precision');
-const formulaDisplay = document.getElementById('formula');
-const calculationStepsDisplay = document.getElementById('calculationSteps');
-const quickResults = document.getElementById('quickResults');
-const totalConversionsSpan = document.getElementById('totalConversions');
-const installButton = document.getElementById('installButton');
-
-// Histórico e Favoritos
+// Variáveis globais
+let currentCategory = 'length';
+let currentFromUnit = 'meter';
+let currentToUnit = 'kilometer';
+let currentDisplayMode = 'standard';
 let conversionHistory = [];
-let favoriteConversions = [];
-
-// Variável para armazenar o evento de instalação
+let favorites = [];
+let totalConversions = 0;
 let deferredPrompt;
 
-// Inicialização com animações e configuração de eventos
+// Inicialização quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
-    // Animar elementos principais ao carregar
-    setTimeout(() => {
-        document.querySelector('.hero-content').classList.add('fade-in');
-    }, 200);
-    
-    setTimeout(() => {
-        document.querySelector('.converter-container').classList.add('fade-in');
-    }, 400);
-    
-    populateUnits('length');
+    initApp();
     setupEventListeners();
-    createParticles();
-    loadHistoryAndFavorites();
+    loadUserData();
     updateTotalConversions();
-    
-    // Verificar se estamos em modo standalone (aplicativo)
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        document.body.classList.add('standalone');
-        installButton.style.display = 'none';
-    }
-    
-    // Configurar evento para instalação do PWA
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        installButton.style.display = 'block';
-    });
-    
-    // Evento de clique no botão de instalação
-    installButton.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                installButton.style.display = 'none';
-                showNotification('Aplicativo instalado com sucesso!');
-            }
-            deferredPrompt = null;
-        }
-    });
-    
-    // Registrar Service Worker para PWA
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-        .then(function(registration) {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        })
-        .catch(function(error) {
-            console.log('ServiceWorker registration failed: ', error);
-        });
-    }
+    updateQuickResults();
 });
 
-function setupEventListeners() {
-    categorySelect.addEventListener('change', function() {
-        this.classList.add('loading');
-        setTimeout(() => {
-            populateUnits(this.value);
-            this.classList.remove('loading');
-            clearResultsAndSteps();
-        }, 300);
-    });
-    
-    fromUnitSelect.addEventListener('change', updateConversion);
-    toUnitSelect.addEventListener('change', updateConversion);
-    
-    fromValueInput.addEventListener('input', debounce(updateConversion, 300));
-    
-    precisionSelect.addEventListener('change', updateConversion);
-    
-    swapButton.addEventListener('click', swapUnits);
-
-    favoriteButton.addEventListener('click', toggleFavorite);
-    
-    toValueInput.addEventListener('input', function() {
-        if (this.value !== '') {
-            reverseConversion();
-        }
-    });
-    
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'Enter') {
-            e.preventDefault();
-            swapUnits();
-        }
-        
-        if (e.key === 'Escape') {
-            clearFields();
-        }
-    });
+// Inicializar a aplicação
+function initApp() {
+    populateCategoryDropdown();
+    populateUnitDropdowns();
+    updateConversion();
+    setupPWA();
 }
 
-function populateUnits(category) {
-    const categoryData = units[category];
-    if (!categoryData) return;
+// Configurar os event listeners
+function setupEventListeners() {
+    document.getElementById('category').addEventListener('change', function() {
+        currentCategory = this.value;
+        populateUnitDropdowns();
+        updateConversion();
+        updateQuickResults();
+    });
+
+    document.getElementById('fromUnit').addEventListener('change', function() {
+        currentFromUnit = this.value;
+        updateConversion();
+        updateFormula();
+    });
+
+    document.getElementById('toUnit').addEventListener('change', function() {
+        currentToUnit = this.value;
+        updateConversion();
+        updateFormula();
+    });
+
+    document.getElementById('fromValue').addEventListener('input', function() {
+        updateConversion();
+        updateFormula();
+    });
+
+    document.getElementById('precision').addEventListener('change', updateConversion);
+    document.getElementById('swapButton').addEventListener('click', swapUnits);
+    document.getElementById('favoriteButton').addEventListener('click', toggleFavorite);
+    document.getElementById('installPWA').addEventListener('click', installPWA);
+}
+
+// Popular o dropdown de categorias
+function populateCategoryDropdown() {
+    const categorySelect = document.getElementById('category');
+    categorySelect.innerHTML = '';
+    
+    for (const [key, category] of Object.entries(units)) {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = category.name;
+        categorySelect.appendChild(option);
+    }
+    
+    categorySelect.value = currentCategory;
+}
+
+// Popular os dropdowns de unidades
+function populateUnitDropdowns() {
+    const fromUnitSelect = document.getElementById('fromUnit');
+    const toUnitSelect = document.getElementById('toUnit');
+    const category = units[currentCategory];
     
     fromUnitSelect.innerHTML = '';
     toUnitSelect.innerHTML = '';
     
-    Object.keys(categoryData.units).forEach(unitKey => {
-        const unit = categoryData.units[unitKey];
+    for (const [key, unit] of Object.entries(category.units)) {
+        const fromOption = document.createElement('option');
+        fromOption.value = key;
+        fromOption.textContent = unit.name;
+        fromUnitSelect.appendChild(fromOption);
         
-        const fromOption = new Option(unit.name, unitKey);
-        const toOption = new Option(unit.name, unitKey);
-        
-        fromUnitSelect.add(fromOption);
-        toUnitSelect.add(toOption);
-    });
+        const toOption = document.createElement('option');
+        toOption.value = key;
+        toOption.textContent = unit.name;
+        toUnitSelect.appendChild(toOption);
+    }
     
-    fromUnitSelect.value = categoryData.base;
-    const toKeys = Object.keys(categoryData.units);
-    toUnitSelect.value = toKeys.find(key => key !== categoryData.base) || toKeys[1] || toKeys[0];
+    // Definir unidades padrão para a categoria
+    currentFromUnit = category.base;
+    currentToUnit = Object.keys(category.units)[1] || category.base;
     
-    updateConversion();
+    fromUnitSelect.value = currentFromUnit;
+    toUnitSelect.value = currentToUnit;
 }
 
+// Atualizar a conversão
 function updateConversion() {
-    const category = categorySelect.value;
-    const fromUnit = fromUnitSelect.value;
-    const toUnit = toUnitSelect.value;
-    const value = parseFloat(fromValueInput.value);
+    const fromValue = parseFloat(document.getElementById('fromValue').value) || 0;
+    const precision = parseInt(document.getElementById('precision').value);
     
-    if (isNaN(value) || fromValueInput.value === '') {
-        toValueInput.value = '';
-        formulaDisplay.textContent = 'Selecione as unidades para visualizar a fórmula';
-        calculationStepsDisplay.innerHTML = 'Digite um valor para ver os passos';
-        quickResults.innerHTML = '<div class="no-results">Aguardando entrada de dados...</div>';
-        return;
+    const result = convertUnit(fromValue, currentCategory, currentFromUnit, currentToUnit);
+    
+    if (result !== null) {
+        document.getElementById('toValue').value = result.toFixed(precision);
+        updateCalculationSteps(fromValue, result);
+        saveToHistory(fromValue, result);
+        updateTotalConversions();
     }
-    
-    const result = convertValue(category, value, fromUnit, toUnit);
-    const precision = parseInt(precisionSelect.value);
-    
-    toValueInput.style.transform = 'scale(1.05)';
-    setTimeout(() => {
-        toValueInput.style.transform = 'scale(1)';
-    }, 200);
-    
-    toValueInput.value = formatResult(result, precision);
-    
-    updateFormulaAndSteps(category, fromUnit, toUnit, value);
-    updateQuickConversions(category, value, fromUnit);
-    
-    addToHistory(category, value, fromUnit, result, toUnit);
-    updateTotalConversions();
-    
-    checkIfFavorite(fromUnit, toUnit);
 }
 
-function reverseConversion() {
-    const category = categorySelect.value;
-    const fromUnit = toUnitSelect.value;
-    const toUnit = fromUnitSelect.value;
-    const value = parseFloat(toValueInput.value);
+// Converter unidades
+function convertUnit(value, category, fromUnit, toUnit) {
+    if (fromUnit === toUnit) return value;
     
-    if (isNaN(value) || toValueInput.value === '') {
-        fromValueInput.value = '';
-        return;
-    }
-    
-    const result = convertValue(category, value, fromUnit, toUnit);
-    const precision = parseInt(precisionSelect.value);
-    
-    fromValueInput.value = formatResult(result, precision);
-    
-    updateFormulaAndSteps(category, fromUnit, toUnit, value);
-}
-
-function convertValue(category, value, fromUnit, toUnit) {
     const categoryData = units[category];
     
-    if (categoryData.convert) {
+    // Para categorias com função de conversão personalizada (temperatura, consumo de combustível)
+    if (categoryData.convert && typeof categoryData.convert === 'function') {
         return categoryData.convert(value, fromUnit, toUnit);
     }
     
+    // Para categorias com fatores de conversão
     const fromFactor = categoryData.units[fromUnit].factor;
     const toFactor = categoryData.units[toUnit].factor;
     
+    // Converter para a unidade base primeiro
     const baseValue = value * fromFactor;
+    
+    // Converter da unidade base para a unidade de destino
     return baseValue / toFactor;
 }
 
-function formatResult(value, precision) {
-    if (value === Infinity || value === -Infinity) {
-        return 'Infinito';
-    }
-    if (isNaN(value)) {
-        return 'Inválido';
-    }
+// Atualizar a fórmula de conversão
+function updateFormula() {
+    const fromValue = parseFloat(document.getElementById('fromValue').value) || 1;
+    const result = convertUnit(fromValue, currentCategory, currentFromUnit, currentToUnit);
+    const precision = parseInt(document.getElementById('precision').value);
     
-    if (Math.abs(value) >= 1e15 || (Math.abs(value) < 1e-6 && value !== 0)) {
-        return value.toExponential(precision);
-    }
+    const formulaElement = document.getElementById('formula');
     
-    return value.toFixed(precision);
-}
-
-function updateFormulaAndSteps(category, fromUnit, toUnit, value) {
-    const categoryData = units[category];
-    const fromUnitData = categoryData.units[fromUnit];
-    const toUnitData = categoryData.units[toUnit];
-    
-    let formulaText = 'Selecione as unidades para visualizar a fórmula';
-    let stepsText = 'Digite um valor para ver os passos';
-    
-    if (fromUnitData && toUnitData) {
-        if (category === 'temperature') {
-            formulaText = getTemperatureFormula(fromUnit, toUnit);
-            stepsText = `1. Converta ${fromUnitData.name} para Celsius.<br>2. Converta Celsius para ${toUnitData.name}.`;
-        } else if (category === 'fuel_consumption') {
-            formulaText = `${fromUnitData.name} -> ${toUnitData.name}`;
-            stepsText = `Converte ${value.toFixed(6)} ${fromUnitData.name} para ${toUnitData.name}.`;
-        } else {
-            const factor = fromUnitData.factor / toUnitData.factor;
-            formulaText = `${fromUnitData.name} × ${factor.toExponential(6)} = ${toUnitData.name}`;
-            stepsText = `1. Converta ${fromUnitData.name} para a unidade base (${categoryData.base}).<br>   ${value.toExponential(6)} ${fromUnitData.name} = ${(value * fromUnitData.factor).toExponential(6)} ${categoryData.base}<br>2. Converta ${categoryData.base} para ${toUnitData.name}.<br>   ${(value * fromUnitData.factor).toExponential(6)} ${categoryData.base} = ${(value * fromUnitData.factor / toUnitData.factor).toExponential(6)} ${toUnitData.name}`;
-        }
-    }
-    
-    formulaDisplay.innerHTML = formulaText;
-    calculationStepsDisplay.innerHTML = stepsText;
-}
-
-function getTemperatureFormula(from, to) {
-    const formulas = {
-        'celsius_fahrenheit': '°F = (°C × 9/5) + 32',
-        'fahrenheit_celsius': '°C = (°F - 32) × 5/9',
-        'celsius_kelvin': 'K = °C + 273.15',
-        'kelvin_celsius': '°C = K - 273.15',
-        'celsius_rankine': '°R = (°C + 273.15) × 9/5',
-        'rankine_celsius': '°C = (°R × 5/9) - 273.15',
-        'celsius_reaumur': '°Ré = °C × 4/5',
-        'reaumur_celsius': '°C = °Ré × 5/4',
-        'fahrenheit_kelvin': 'K = (°F - 32) × 5/9 + 273.15',
-        'kelvin_fahrenheit': '°F = (K - 273.15) × 9/5 + 32'
-    };
-    
-    const key = `${from}_${to}`;
-    return formulas[key] || `Fórmula para ${from} para ${to}`;
-}
-
-function updateQuickConversions(category, value, fromUnit) {
-    const categoryData = units[category];
-    const commonUnits = getCommonUnits(category, fromUnit);
-    
-    quickResults.innerHTML = '';
-    
-    commonUnits.forEach((unitKey, index) => {
-        if (unitKey !== fromUnit) {
-            const result = convertValue(category, value, fromUnit, unitKey);
-            const precision = Math.abs(result) < 1000 && Math.abs(result) > 0.001 ? 4 : 2;
-            
-            const quickDiv = document.createElement('div');
-            quickDiv.className = 'quick-result slide-in';
-            quickDiv.style.animationDelay = `${index * 0.1}s`;
-            quickDiv.innerHTML = `
-                <div class="quick-value">${formatResult(result, precision)}</div>
-                <div class="quick-unit">${categoryData.units[unitKey].name}</div>
-            `;
-            
-            quickDiv.addEventListener('click', () => {
-                copyToClipboard(formatResult(result, precision));
-                showNotification('Valor copiado!');
-            });
-            
-            quickResults.appendChild(quickDiv);
-        }
-    });
-    
-    if (quickResults.innerHTML === '') {
-        quickResults.innerHTML = '<div class="no-results">Nenhuma conversão rápida disponível</div>';
+    if (currentCategory === 'temperature') {
+        formulaElement.innerHTML = `
+            <div class="formula-text">
+                ${fromValue} ${units[currentCategory].units[currentFromUnit].name} = ${result.toFixed(precision)} ${units[currentCategory].units[currentToUnit].name}
+            </div>
+            <div class="formula-note">
+                A conversão de temperatura usa fórmulas específicas para cada escala.
+            </div>
+        `;
+    } else if (currentCategory === 'fuel_consumption') {
+        formulaElement.innerHTML = `
+            <div class="formula-text">
+                ${fromValue} ${units[currentCategory].units[currentFromUnit].name} = ${result.toFixed(precision)} ${units[currentCategory].units[currentToUnit].name}
+            </div>
+            <div class="formula-note">
+                A conversão de consumo de combustível usa fórmulas específicas para cada unidade.
+            </div>
+        `;
+    } else {
+        const fromFactor = units[currentCategory].units[currentFromUnit].factor;
+        const toFactor = units[currentCategory].units[currentToUnit].factor;
+        const baseUnit = units[currentCategory].base;
+        
+        formulaElement.innerHTML = `
+            <div class="formula-text">
+                ${fromValue} ${units[currentCategory].units[currentFromUnit].name} × (${fromFactor} ${baseUnit}/${currentFromUnit}) ÷ (${toFactor} ${baseUnit}/${currentToUnit}) = ${result.toFixed(precision)} ${units[currentCategory].units[currentToUnit].name}
+            </div>
+            <div class="formula-equation">
+                ${fromValue} × ${fromFactor} ÷ ${toFactor} = ${result.toFixed(precision)}
+            </div>
+        `;
     }
 }
 
-function getCommonUnits(category, currentUnit) {
-    const common = {
-        length: ['meter', 'kilometer', 'centimeter', 'millimeter', 'inch', 'foot', 'yard'],
-        area: ['square_meter', 'square_kilometer', 'hectare', 'square_foot', 'acre'],
-        volume: ['liter', 'milliliter', 'cubic_meter', 'gallon', 'cup'],
-        mass: ['kilogram', 'gram', 'pound', 'ounce', 'metric_ton'],
-        temperature: ['celsius', 'fahrenheit', 'kelvin'],
-        time: ['second', 'minute', 'hour', 'day', 'year'],
-        speed: ['meter_per_second', 'kilometer_per_hour', 'mile_per_hour', 'knot'],
-        power: ['watt', 'kilowatt', 'horsepower'],
-        energy: ['joule', 'kilowatt_hour', 'calorie', 'kilocalorie'],
-        data: ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte']
-    };
+// Atualizar os passos do cálculo
+function updateCalculationSteps(fromValue, result) {
+    const stepsElement = document.getElementById('calculationSteps');
+    const precision = parseInt(document.getElementById('precision').value);
     
-    return common[category] || Object.keys(units[category].units).slice(0, 6);
+    if (currentCategory === 'temperature' || currentCategory === 'fuel_consumption') {
+        stepsElement.innerHTML = `
+            <div class="step">1. Valor original: ${fromValue} ${units[currentCategory].units[currentFromUnit].name}</div>
+            <div class="step">2. Aplicada fórmula específica da categoria</div>
+            <div class="step">3. Resultado: ${result.toFixed(precision)} ${units[currentCategory].units[currentToUnit].name}</div>
+        `;
+    } else {
+        const fromFactor = units[currentCategory].units[currentFromUnit].factor;
+        const toFactor = units[currentCategory].units[currentToUnit].factor;
+        const baseValue = fromValue * fromFactor;
+        
+        stepsElement.innerHTML = `
+            <div class="step">1. Converter para unidade base: ${fromValue} × ${fromFactor} = ${baseValue}</div>
+            <div class="step">2. Converter para unidade destino: ${baseValue} ÷ ${toFactor} = ${result.toFixed(precision)}</div>
+            <div class="step">3. Resultado final: ${result.toFixed(precision)} ${units[currentCategory].units[currentToUnit].name}</div>
+        `;
+    }
 }
 
+// Trocar as unidades
 function swapUnits() {
-    const fromUnit = fromUnitSelect.value;
-    const toUnit = toUnitSelect.value;
+    [currentFromUnit, currentToUnit] = [currentToUnit, currentFromUnit];
     
-    swapButton.style.transform = 'scale(0.8) rotate(180deg)';
-    setTimeout(() => {
-        swapButton.style.transform = 'scale(1) rotate(0deg)';
-    }, 300);
+    document.getElementById('fromUnit').value = currentFromUnit;
+    document.getElementById('toUnit').value = currentToUnit;
     
-    fromUnitSelect.value = toUnit;
-    toUnitSelect.value = fromUnit;
+    const fromValue = document.getElementById('fromValue').value;
+    const result = document.getElementById('toValue').value;
     
-    const fromInputValue = fromValueInput.value;
-    const toInputValue = toValueInput.value;
-    
-    fromValueInput.value = toInputValue;
-    toValueInput.value = fromInputValue;
+    document.getElementById('fromValue').value = result;
+    document.getElementById('toValue').value = fromValue;
     
     updateConversion();
+    updateFormula();
 }
 
+// Adicionar/remover dos favoritos
 function toggleFavorite() {
-    const category = categorySelect.value;
-    const fromUnit = fromUnitSelect.value;
-    const toUnit = toUnitSelect.value;
+    const conversionKey = `${currentCategory}:${currentFromUnit}:${currentToUnit}`;
+    const index = favorites.indexOf(conversionKey);
     
-    const favoriteKey = `${category}-${fromUnit}-to-${toUnit}`;
-    const existingIndex = favoriteConversions.findIndex(fav => fav.key === favoriteKey);
-    
-    if (existingIndex > -1) {
-        favoriteConversions.splice(existingIndex, 1);
-        favoriteButton.classList.remove('active');
-        showNotification('Removido dos favoritos');
+    if (index === -1) {
+        favorites.push(conversionKey);
+        document.getElementById('favoriteButton').classList.add('active');
+        showNotification('Conversão adicionada aos favoritos!');
     } else {
-        const newFavorite = {
-            key: favoriteKey,
-            category: category,
-            fromUnit: fromUnit,
-            toUnit: toUnit,
-            fromName: fromUnitSelect.options[fromUnitSelect.selectedIndex].text,
-            toName: toUnitSelect.options[toUnitSelect.selectedIndex].text
-        };
-        favoriteConversions.unshift(newFavorite);
-        favoriteButton.classList.add('active');
-        showNotification('Adicionado aos favoritos');
+        favorites.splice(index, 1);
+        document.getElementById('favoriteButton').classList.remove('active');
+        showNotification('Conversão removida dos favoritos!');
     }
     
-    renderFavorites();
-    saveHistoryAndFavorites();
+    saveUserData();
+    updateFavoritesButton();
 }
 
-function checkIfFavorite(fromUnit, toUnit) {
-    const category = categorySelect.value;
-    const favoriteKey = `${category}-${fromUnit}-to-${toUnit}`;
-    const isFavorite = favoriteConversions.some(fav => fav.key === favoriteKey);
+// Atualizar o botão de favoritos
+function updateFavoritesButton() {
+    const conversionKey = `${currentCategory}:${currentFromUnit}:${currentToUnit}`;
+    const favoriteButton = document.getElementById('favoriteButton');
     
-    if (isFavorite) {
+    if (favorites.includes(conversionKey)) {
         favoriteButton.classList.add('active');
     } else {
         favoriteButton.classList.remove('active');
     }
 }
 
-function toggleHistory() {
-    const panel = document.getElementById('historyPanel');
-    panel.classList.toggle('open');
-    renderHistory();
+// Salvar no histórico
+function saveToHistory(fromValue, result) {
+    if (fromValue === 0) return;
+    
+    const conversion = {
+        timestamp: new Date(),
+        category: currentCategory,
+        fromUnit: currentFromUnit,
+        toUnit: currentToUnit,
+        fromValue: fromValue,
+        result: result,
+        precision: parseInt(document.getElementById('precision').value)
+    };
+    
+    conversionHistory.unshift(conversion);
+    
+    if (conversionHistory.length > 50) {
+        conversionHistory = conversionHistory.slice(0, 50);
+    }
+    
+    saveUserData();
+    updateHistoryDisplay();
 }
 
-function toggleFavorites() {
-    const panel = document.getElementById('favoritesPanel');
-    panel.classList.toggle('open');
-    renderFavorites();
+// Limpar o histórico
+function clearHistory() {
+    conversionHistory = [];
+    saveUserData();
+    updateHistoryDisplay();
+    showNotification('Histórico limpo!');
 }
 
-function renderHistory() {
+// Atualizar a exibição do histórico
+function updateHistoryDisplay() {
     const historyList = document.getElementById('historyList');
-    historyList.innerHTML = '';
     
     if (conversionHistory.length === 0) {
         historyList.innerHTML = '<div class="no-history">Nenhuma conversão realizada ainda</div>';
         return;
     }
     
-    conversionHistory.forEach(entry => {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'history-item';
-        itemDiv.innerHTML = `
-            <div class="conversion">${entry.fromValue} ${entry.fromUnit} → ${entry.toValue} ${entry.toUnit}</div>
-            <div class="timestamp">${new Date(entry.timestamp).toLocaleString()}</div>
+    historyList.innerHTML = '';
+    
+    conversionHistory.forEach((conversion, index) => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        
+        const fromUnitName = units[conversion.category].units[conversion.fromUnit].name;
+        const toUnitName = units[conversion.category].units[conversion.toUnit].name;
+        
+        historyItem.innerHTML = `
+            <div class="history-content">
+                <div class="history-values">
+                    ${conversion.fromValue} ${fromUnitName} → ${conversion.result.toFixed(conversion.precision)} ${toUnitName}
+                </div>
+                <div class="history-meta">
+                    ${conversion.timestamp.toLocaleString()}
+                </div>
+            </div>
+            <div class="history-actions">
+                <button class="history-action-btn" onclick="loadHistoryItem(${index})" title="Carregar esta conversão">
+                    ↻
+                </button>
+            </div>
         `;
-        historyList.appendChild(itemDiv);
+        
+        historyList.appendChild(historyItem);
     });
 }
 
-function renderFavorites() {
-    const favoritesList = document.getElementById('favoritesList');
-    favoritesList.innerHTML = '';
+// Carregar item do histórico
+function loadHistoryItem(index) {
+    const conversion = conversionHistory[index];
     
-    if (favoriteConversions.length === 0) {
+    document.getElementById('category').value = conversion.category;
+    currentCategory = conversion.category;
+    
+    populateUnitDropdowns();
+    
+    document.getElementById('fromUnit').value = conversion.fromUnit;
+    document.getElementById('toUnit').value = conversion.toUnit;
+    document.getElementById('fromValue').value = conversion.fromValue;
+    document.getElementById('precision').value = conversion.precision;
+    
+    currentFromUnit = conversion.fromUnit;
+    currentToUnit = conversion.toUnit;
+    
+    updateConversion();
+    updateFormula();
+    updateFavoritesButton();
+    
+    toggleHistory();
+    showNotification('Conversão carregada do histórico!');
+}
+
+// Atualizar totais de conversões
+function updateTotalConversions() {
+    totalConversions = conversionHistory.length;
+    document.getElementById('totalConversions').textContent = totalConversions;
+}
+
+// Atualizar resultados rápidos
+function updateQuickResults() {
+    const quickResults = document.getElementById('quickResults');
+    const category = units[currentCategory];
+    const baseUnit = category.base;
+    
+    quickResults.innerHTML = '';
+    
+    // Obter até 5 unidades para mostrar como conversões rápidas
+    const unitKeys = Object.keys(category.units);
+    const quickUnits = unitKeys.filter(unit => unit !== currentToUnit).slice(0, 5);
+    
+    quickUnits.forEach(unit => {
+        const fromValue = parseFloat(document.getElementById('fromValue').value) || 1;
+        const result = convertUnit(fromValue, currentCategory, currentFromUnit, unit);
+        const precision = parseInt(document.getElementById('precision').value);
+        
+        const quickItem = document.createElement('div');
+        quickItem.className = 'quick-item';
+        quickItem.innerHTML = `
+            <div class="quick-value">${result.toFixed(precision)}</div>
+            <div class="quick-unit">${category.units[unit].name}</div>
+        `;
+        
+        quickItem.addEventListener('click', () => {
+            document.getElementById('toUnit').value = unit;
+            currentToUnit = unit;
+            updateConversion();
+            updateFormula();
+            updateFavoritesButton();
+        });
+        
+        quickResults.appendChild(quickItem);
+    });
+}
+
+// Copiar resultado
+function copyResult() {
+    const resultInput = document.getElementById('toValue');
+    resultInput.select();
+    document.execCommand('copy');
+    
+    showNotification('Resultado copiado para a área de transferência!');
+}
+
+// Alternar painel de histórico
+function toggleHistory() {
+    const historyPanel = document.getElementById('historyPanel');
+    const favoritesPanel = document.getElementById('favoritesPanel');
+    
+    if (historyPanel.classList.contains('active')) {
+        historyPanel.classList.remove('active');
+    } else {
+        historyPanel.classList.add('active');
+        favoritesPanel.classList.remove('active');
+        updateHistoryDisplay();
+    }
+}
+
+// Alternar painel de favoritos
+function toggleFavorites() {
+    const historyPanel = document.getElementById('historyPanel');
+    const favoritesPanel = document.getElementById('favoritesPanel');
+    
+    if (favoritesPanel.classList.contains('active')) {
+        favoritesPanel.classList.remove('active');
+    } else {
+        favoritesPanel.classList.add('active');
+        historyPanel.classList.remove('active');
+        updateFavoritesDisplay();
+    }
+}
+
+// Atualizar exibição de favoritos
+function updateFavoritesDisplay() {
+    const favoritesList = document.getElementById('favoritesList');
+    
+    if (favorites.length === 0) {
         favoritesList.innerHTML = '<div class="no-favorites">Nenhuma conversão favorita</div>';
         return;
     }
     
-    favoriteConversions.forEach(fav => {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'favorite-item';
-        itemDiv.innerHTML = `
-            <div class="conversion">${fav.fromName} ↔ ${fav.toName}</div>
-            <button class="remove-fav-btn" onclick="removeFavorite('${fav.key}')" title="Remover dos favoritos">×</button>
+    favoritesList.innerHTML = '';
+    
+    favorites.forEach((favoriteKey, index) => {
+        const [categoryKey, fromUnitKey, toUnitKey] = favoriteKey.split(':');
+        const category = units[categoryKey];
+        const fromUnitName = category.units[fromUnitKey].name;
+        const toUnitName = category.units[toUnitKey].name;
+        
+        const favoriteItem = document.createElement('div');
+        favoriteItem.className = 'favorite-item';
+        
+        favoriteItem.innerHTML = `
+            <div class="favorite-content">
+                <div class="favorite-title">${category.name}</div>
+                <div class="favorite-values">${fromUnitName} → ${toUnitName}</div>
+            </div>
+            <div class="favorite-actions">
+                <button class="favorite-action-btn" onclick="loadFavorite('${categoryKey}', '${fromUnitKey}', '${toUnitKey}')" title="Carregar esta conversão">
+                    ↻
+                </button>
+                <button class="favorite-action-btn" onclick="removeFavorite(${index})" title="Remover dos favoritos">
+                    ×
+                </button>
+            </div>
         `;
-        itemDiv.querySelector('.conversion').addEventListener('click', () => {
-            loadFavoriteConversion(fav);
-        });
-        favoritesList.appendChild(itemDiv);
+        
+        favoritesList.appendChild(favoriteItem);
     });
 }
 
-function removeFavorite(key) {
-    favoriteConversions = favoriteConversions.filter(fav => fav.key !== key);
-    renderFavorites();
-    saveHistoryAndFavorites();
-    checkIfFavorite(fromUnitSelect.value, toUnitSelect.value);
+// Carregar favorito
+function loadFavorite(categoryKey, fromUnitKey, toUnitKey) {
+    document.getElementById('category').value = categoryKey;
+    currentCategory = categoryKey;
+    
+    populateUnitDropdowns();
+    
+    document.getElementById('fromUnit').value = fromUnitKey;
+    document.getElementById('toUnit').value = toUnitKey;
+    document.getElementById('fromValue').value = 1;
+    
+    currentFromUnit = fromUnitKey;
+    currentToUnit = toUnitKey;
+    
+    updateConversion();
+    updateFormula();
+    updateFavoritesButton();
+    
+    toggleFavorites();
+    showNotification('Conversão favorita carregada!');
+}
+
+// Remover favorito
+function removeFavorite(index) {
+    favorites.splice(index, 1);
+    saveUserData();
+    updateFavoritesDisplay();
+    updateFavoritesButton();
     showNotification('Favorito removido!');
 }
 
-function loadFavoriteConversion(fav) {
-    categorySelect.value = fav.category;
-    populateUnits(fav.category);
-    
-    setTimeout(() => {
-        fromUnitSelect.value = fav.fromUnit;
-        toUnitSelect.value = fav.toUnit;
-        updateConversion();
-        toggleFavorites();
-    }, 100);
-}
-
-function clearHistory() {
-    conversionHistory = [];
-    renderHistory();
-    saveHistoryAndFavorites();
-    showNotification('Histórico limpo!');
-}
-
-function clearFields() {
-    fromValueInput.value = '';
-    toValueInput.value = '';
-    calculationStepsDisplay.innerHTML = 'Digite um valor para ver os passos';
-    updateConversion();
-}
-
-function updateTotalConversions() {
-    totalConversionsSpan.textContent = conversionHistory.length;
-}
-
-function copyResult() {
-    const resultValue = toValueInput.value;
-    if (resultValue) {
-        copyToClipboard(resultValue);
-        showNotification('Resultado copiado!');
-    }
-}
-
+// Definir modo de exibição
 function setDisplayMode(mode) {
-    const buttons = document.querySelectorAll('.mode-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
+    currentDisplayMode = mode;
+    
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
     document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
     
-    const value = parseFloat(toValueInput.value);
-    const precision = parseInt(precisionSelect.value);
-    
-    if (!isNaN(value)) {
-        if (mode === 'scientific') {
-            toValueInput.value = value.toExponential(precision);
-        } else {
-            toValueInput.value = formatResult(value, precision);
-        }
+    if (mode === 'scientific') {
+        document.querySelector('.calculator-panel').style.display = 'block';
+    } else {
+        document.querySelector('.calculator-panel').style.display = 'none';
     }
 }
 
-let calculatorInput = '';
-
+// Funções da calculadora
 function appendToCalc(value) {
-    calculatorInput += value;
-    calcDisplay.value = calculatorInput;
+    const display = document.getElementById('calcDisplay');
+    display.value += value;
+}
+
+function appendFunction(func) {
+    const display = document.getElementById('calcDisplay');
+    display.value += func;
 }
 
 function clearCalc() {
-    calculatorInput = '';
-    calcDisplay.value = '';
+    document.getElementById('calcDisplay').value = '';
 }
 
 function deleteLast() {
-    calculatorInput = calculatorInput.slice(0, -1);
-    calcDisplay.value = calculatorInput;
+    const display = document.getElementById('calcDisplay');
+    display.value = display.value.slice(0, -1);
 }
 
 function calculate() {
+    const display = document.getElementById('calcDisplay');
     try {
-        let expression = calculatorInput;
+        // Substituir operadores visuais por operadores JavaScript
+        let expression = display.value
+            .replace(/×/g, '*')
+            .replace(/÷/g, '/');
         
-        // Substituir operadores matemáticos para eval seguro
-        expression = expression.replace(/Math\.pow\(/g, 'pow(');
-        
-        // Adicionar parênteses de fechamento para funções abertas
-        const openParens = (expression.match(/\(/g) || []).length;
-        const closeParens = (expression.match(/\)/g) || []).length;
-        for (let i = 0; i < openParens - closeParens; i++) {
-            expression += ')';
-        }
-        
-        // Funções seguras para eval
-        const safeEval = (expr) => {
-            const safeFuncs = {
-                sin: Math.sin,
-                cos: Math.cos,
-                tan: Math.tan,
-                sqrt: Math.sqrt,
-                pow: Math.pow,
-                PI: Math.PI,
-                E: Math.E
-            };
-            
-            // Substituir funções por referências seguras
-            expr = expr.replace(/Math\.(\w+)/g, (match, func) => {
-                return safeFuncs[func] ? `safeFuncs.${func}` : match;
-            });
-            
-            return Function('safeFuncs', `return ${expr}`)(safeFuncs);
-        };
-        
-        const result = safeEval(expression);
+        // Avaliar a expressão com segurança
+        const result = Function('"use strict"; return (' + expression + ')')();
         
         if (isNaN(result) || !isFinite(result)) {
-            throw new Error("Resultado inválido");
+            display.value = 'Erro';
+        } else {
+            display.value = result;
         }
-        
-        calculatorInput = String(result);
-        calcDisplay.value = calculatorInput;
-        
     } catch (error) {
-        calcDisplay.value = 'Erro';
-        calculatorInput = '';
-        console.error("Erro na calculadora:", error);
+        display.value = 'Erro';
     }
 }
 
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+// Salvar dados do usuário
+function saveUserData() {
+    const userData = {
+        history: conversionHistory,
+        favorites: favorites,
+        totalConversions: totalConversions
     };
+    
+    localStorage.setItem('converterData', JSON.stringify(userData));
 }
 
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).catch(() => {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-    });
+// Carregar dados do usuário
+function loadUserData() {
+    const savedData = localStorage.getItem('converterData');
+    
+    if (savedData) {
+        const userData = JSON.parse(savedData);
+        conversionHistory = userData.history || [];
+        favorites = userData.favorites || [];
+        totalConversions = userData.totalConversions || 0;
+        
+        updateHistoryDisplay();
+        updateFavoritesDisplay();
+        updateFavoritesButton();
+        updateTotalConversions();
+    }
 }
 
-function showNotification(message, type = 'success') {
+// Mostrar notificação
+function showNotification(message) {
+    // Criar elemento de notificação
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
+    notification.className = 'notification';
     notification.textContent = message;
     
+    // Adicionar ao corpo
     document.body.appendChild(notification);
     
+    // Mostrar notificação
     setTimeout(() => {
         notification.classList.add('show');
-    }, 100);
+    }, 10);
     
+    // Remover após 3 segundos
     setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => {
             document.body.removeChild(notification);
         }, 300);
-    }, 2000);
+    }, 3000);
 }
 
-function createParticles() {
-    const particlesContainer = document.getElementById('particles-background');
+// Configurar PWA
+function setupPWA() {
+    // Registrar service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(registration => {
+                console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    }
     
-    for (let i = 0; i < 50; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: absolute;
-            width: ${Math.random() * 5 + 1}px;
-            height: ${Math.random() * 5 + 1}px;
-            background: rgba(255, 71, 87, ${Math.random() * 0.4 + 0.1});
-            border-radius: 50%;
-            top: ${Math.random() * 100}%;
-            left: ${Math.random() * 100}%;
-            animation: float ${Math.random() * 4 + 2}s ease-in-out infinite;
-            animation-delay: ${Math.random() * 3}s;
-        `;
-        particlesContainer.appendChild(particle);
+    // Evento para instalação do PWA
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Mostrar botão de instalação
+        const installButton = document.getElementById('installButton');
+        if (installButton) {
+            installButton.style.display = 'block';
+        }
+    });
+}
+
+// Instalar PWA
+function installPWA() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+                document.getElementById('installButton').style.display = 'none';
+            } else {
+                console.log('User dismissed the install prompt');
+            }
+            deferredPrompt = null;
+        });
     }
 }
 
-function addToHistory(category, fromValue, fromUnit, toValue, toUnit) {
-    const newEntry = {
-        category,
-        fromValue,
-        fromUnit,
-        toValue,
-        toUnit,
-        timestamp: Date.now()
-    };
-    
-    conversionHistory.unshift(newEntry);
-    if (conversionHistory.length > 50) {
-        conversionHistory.pop();
-    }
-    
-    saveHistoryAndFavorites();
-}
-
-function saveHistoryAndFavorites() {
-    localStorage.setItem('conversionHistory', JSON.stringify(conversionHistory));
-    localStorage.setItem('favoriteConversions', JSON.stringify(favoriteConversions));
-}
-
-function loadHistoryAndFavorites() {
-    const savedHistory = localStorage.getItem('conversionHistory');
-    if (savedHistory) {
-        conversionHistory = JSON.parse(savedHistory);
-    }
-    
-    const savedFavorites = localStorage.getItem('favoriteConversions');
-    if (savedFavorites) {
-        favoriteConversions = JSON.parse(savedFavorites);
-    }
-    
-    renderHistory();
-    renderFavorites();
-    checkIfFavorite(fromUnitSelect.value, toUnitSelect.value);
-}
-
-function clearResultsAndSteps() {
-    toValueInput.value = '';
-    formulaDisplay.textContent = 'Selecione as unidades para visualizar a fórmula';
-    calculationStepsDisplay.innerHTML = 'Digite um valor para ver os passos';
-    quickResults.innerHTML = '<div class="no-results">Aguardando entrada de dados...</div>';
-}
+// Verificar se o app está instalado
+window.addEventListener('appinstalled', () => {
+    console.log('PWA was installed');
+    document.getElementById('installButton').style.display = 'none';
+});

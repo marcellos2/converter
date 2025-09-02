@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Conversor Universal">
-    <title>Conversor Universal de Unidades </title>
+    <title>Conversor Universal de Unidades</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
@@ -16,7 +16,7 @@
     <link rel="manifest" href="manifest.json">
 
     <!-- Favicon / Logo -->
-    <link rel="icon" type="image/png" href="">
+    <link rel="icon" type="image/png" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjcyIiBmaWxsPSIjZmY0NzU3Ii8+Cjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9ImJvbGQiPlRlYys8L3RleHQ+Cjwvc3ZnPg==">
 </head>
 
 <body>
@@ -26,7 +26,7 @@
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-brand">
-            <img src="img/tec+original.png" alt="Logo Tec+" class="nav-logo">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjcyIiBmaWxsPSIjZmY0NzU3Ii8+Cjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9ImJvbGQiPlRlYys8L3RleHQ+Cjwvc3ZnPg==" alt="Logo Tec+" class="nav-logo">
         </div>
 
         <div class="nav-links">
@@ -66,7 +66,10 @@
     <div class="container">
         <!-- HERO -->
         <header class="hero-section">
-            <div class="hero-content">            
+            <div class="hero-content">
+                <div class="hero-icon">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjZmY0NzU3IiByeD0iMTUiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCI+VGVjKzwvdGV4dD4KPC9zdmc+" alt="Logo Tec+" class="hero-logo">
+                </div>
                 <h1 class="hero-title">
                     <span class="highlight">SISTEMA AVANÇADO</span>
                     Conversor Universal
@@ -92,7 +95,7 @@
                 
                 <!-- Botão de instalação personalizado -->
                 <div id="installButton" class="install-container" style="display: none;">
-                    <button class="install-btn pulse">
+                    <button class="install-btn pulse" id="installPWA">
                         <svg class="install-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                             <polyline points="7,10 12,15 17,10"/>
@@ -271,11 +274,11 @@
                             <button onclick="appendToCalc('0')" class="zero">0</button>
                             <button onclick="appendToCalc('.')">.</button>
 
-                            <button onclick="appendToCalc('Math.sqrt(')" class="scientific">√</button>
-                            <button onclick="appendToCalc('Math.pow(')" class="scientific">^</button>
-                            <button onclick="appendToCalc('Math.sin(')" class="scientific">sin</button>
-                            <button onclick="appendToCalc('Math.cos(')" class="scientific">cos</button>
-                            <button onclick="appendToCalc('Math.tan(')" class="scientific">tan</button>
+                            <button onclick="appendFunction('Math.sqrt(')" class="scientific">√</button>
+                            <button onclick="appendFunction('Math.pow(')" class="scientific">^</button>
+                            <button onclick="appendFunction('Math.sin(')" class="scientific">sin</button>
+                            <button onclick="appendFunction('Math.cos(')" class="scientific">cos</button>
+                            <button onclick="appendFunction('Math.tan(')" class="scientific">tan</button>
                             <button onclick="appendToCalc('Math.PI')" class="scientific">π</button>
                             <button onclick="appendToCalc('Math.E')" class="scientific">e</button>
                             <button onclick="appendToCalc('(')">(</button>
@@ -285,11 +288,9 @@
                 </section>
             </section>
         </main>
+    </div>
 
     <!-- JS -->
-     
-     
     <script src="script.js"></script>
-    
 </body>
 </html>
